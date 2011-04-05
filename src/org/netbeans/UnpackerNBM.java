@@ -6,13 +6,13 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
+this list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
 3. Neither the name of Gephi.org; nor the names of its
-   contributors may be used to endorse or promote products derived from this
-   software without specific prior written permission.
+contributors may be used to endorse or promote products derived from this
+software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -25,7 +25,6 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.netbeans;
 
 import java.io.BufferedInputStream;
@@ -61,20 +60,24 @@ public class UnpackerNBM {
 
         //Unpack each pack.gz files
         for (File f : packFiles) {
-            unpack200(f);
-            f.delete();
+            if (f.getName().endsWith("pack.gz")) {
+                unpack200(f);
+                f.delete();
+            } else {
+                System.out.println("Unpack "+f.getName());
+            }
         }
     }
 
     private void unpack200(File pack) throws Exception {
         String baseName = pack.getName().substring(0, pack.getName().lastIndexOf(".jar.pack.gz"));
         File jarFile = new File(pack.getParentFile(), baseName + ".jar");
-        System.out.println("Unpack "+baseName+".jar");
+        System.out.println("Unpack " + baseName + ".jar");
 
         String unpack200Executable = new File(System.getProperty("java.home"), "bin/unpack200" + (isWindows() ? ".exe" : "")).getAbsolutePath();
 
         ProcessBuilder pb = new ProcessBuilder(
-                unpack200Executable,            
+                unpack200Executable,
                 pack.getAbsolutePath(),
                 jarFile.getAbsolutePath());
 
@@ -89,7 +92,7 @@ public class UnpackerNBM {
     }
 
     private List<File> unzip(File nbm) throws Exception {
-        
+
         List<File> packFiles = new ArrayList<File>();
         ZipFile zipFile;
         // Open Zip file for reading
@@ -105,14 +108,14 @@ public class UnpackerNBM {
 
             String currentEntry = entry.getName();
             //System.out.println(currentEntry);
-            if (currentEntry.endsWith("pack.gz")) {
+            if (currentEntry.endsWith("pack.gz") || currentEntry.endsWith("jar")) {
                 BufferedInputStream is = new BufferedInputStream(zipFile.getInputStream(entry));
                 int currentByte;
                 // establish buffer for writing file
                 byte data[] = new byte[2048];
 
                 // write the current file to disk
-                String baseName = currentEntry.substring(currentEntry.lastIndexOf('/')+1);
+                String baseName = currentEntry.substring(currentEntry.lastIndexOf('/') + 1);
                 File packFile = new File(nbm.getParentFile(), baseName);
                 packFiles.add(packFile);
                 FileOutputStream fos = new FileOutputStream(packFile);
