@@ -41,6 +41,12 @@ Be sure to have installed the JDK. The result is placed in the dist folder.
 
     ant jar
 
+## Release notes
+
+    v0.2: Add support for third-party JARs included in NBMs
+    
+    v0.1: First version
+
 ## License
 
 Copyright © 2011 Mathieu Bastian, from Gephi.org
